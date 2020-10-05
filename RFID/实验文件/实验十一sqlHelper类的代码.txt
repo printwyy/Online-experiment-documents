@@ -1,0 +1,169 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Data;
+using System.Data.SqlClient;
+using System.Windows.Forms;
+
+namespace WindowsFormsApplication16
+{
+    class sqlHelper
+    {
+        //建立连接字符串
+        public string connection = "server=.;database=studentCard;uid=sa;pwd=123";
+        public int i = 0;
+        public string j;
+        //创建SqlConnection对象
+        SqlConnection sc = new SqlConnection();
+
+        public void insert()
+        {
+        }
+
+        //在sqlHelper类中插入信息方法：
+public void insert(string IDcard,string Name,string Sex,string cardID,string money)
+        {
+            sc.ConnectionString = connection;     //设置SqlConnecttion对象的连接字符串
+
+try
+            {
+                sc.Open();                         //打开数据库连接
+SqlCommand cmd = new SqlCommand(); //创建SqlCommand对象
+                cmd.CommandType = CommandType.Text;//设置SqlCommand对象执行SQL文本命令
+                cmd.Connection = sc;               //设置SqlCommand对象的Connection属性
+               cmd.CommandText = "INSERT INTO Table_1 values( '" + IDcard + "','" + Name + "','" + Sex + "','" + cardID + "','" + money + "')";        
+    i = cmd.ExecuteNonQuery();         //返回数据库中受影响的行数
+            }	
+finally
+            {
+                sc.Close();
+            }
+}
+//在sqlHelper类中修改信息方法
+public void Change()
+        {
+            sc.ConnectionString = connection;     //设置SqlConnecttion对象的连接字符串
+string Name = "孙飞";
+string IDCard = "430281199308074517";
+try
+            {
+                sc.Open();
+                SqlCommand cmd = new SqlCommand("UPDATE stuInfo1 set Name='" + Name + "' where IDCard='" + IDCard + "'", sc);
+                i = cmd.ExecuteNonQuery();
+            }
+finally
+            {
+                sc.Close();
+            }
+        }
+//在sqlHelper类中查询信息方法
+public void Select()
+        {
+            sc.ConnectionString = connection;     //设置SqlConnecttion对象的连接字符串
+string IDCard = "430281199308074517";
+try
+            {
+                sc.Open();
+SqlCommand cmd = new SqlCommand("Select  Name from stuInfo1 where IDCard='" + IDCard + "'", sc);
+                j = (string)cmd.ExecuteScalar();   //把查询的结果的第一行第一列的值赋给j
+            }
+finally
+            {
+                sc.Close();
+            }
+}
+//在sqlHelper类中删除信息方法
+public void Delete()
+        {
+            sc.ConnectionString = connection;     //设置SqlConnecttion对象的连接字符串
+string Name = "张飞";
+try
+            {
+                sc.Open();
+string cmdtext = "DELETE from stuInfo1 where Name='" + Name + "'";
+SqlCommand cmd = new SqlCommand(cmdtext, sc);
+                i = cmd.ExecuteNonQuery();
+            }
+catch (Exception ex)
+            {
+Console.WriteLine("打开数据库错误:{0}", ex.Message);
+            }
+finally
+            {
+                sc.Close();
+            }
+}
+//在sqlHelper类中返回受影响的行数。
+public int IsSuccess()
+        {
+return i;
+        }
+public string IsSucced()
+        {
+return j;
+}
+//添加按钮单击事件具体代码如下所示
+private void btnInsert_Click(object sender, EventArgs e)
+        {
+sqlHelper sh = new sqlHelper();
+            sh.insert();
+int i = sh.IsSuccess();
+if (i > 0)
+            {
+MessageBox.Show("添加信息成功!");
+            }
+else
+            {
+MessageBox.Show("数据库错误!添加信息失败!");
+            }
+}
+//查询按钮单击事件代码如下所示：
+private void btnSelect_Click(object sender, EventArgs e)
+        {
+		   sqlHelper sh = new sqlHelper(); 
+            sh.Select();
+string Name = sh.IsSucced();
+if (Name == "李飞")
+            {
+MessageBox.Show("查询信息成功!");
+            }
+else
+            {
+MessageBox.Show("查询信息失败!");
+            }
+}
+//修改按钮单击事件代码如下
+private void btnChange_Click(object sender, EventArgs e)
+        {
+sqlHelper sh = new sqlHelper();
+            sh.Change();
+int i = sh.IsSuccess();
+if (i > 0)
+            {
+MessageBox.Show("修改信息成功!");
+            }
+else
+            {
+MessageBox.Show("数据库错误!修改信息失败!");
+            }
+}
+//删除按钮单击事件代码如下所示：
+private void btnDelete_Click(object sender, EventArgs e)
+        {
+sqlHelper sh = new sqlHelper();
+            sh.Delete();
+int j = sh.IsSuccess();
+if (j > 0)
+            {
+MessageBox.Show("删除信息成功!");
+            }
+else
+            {
+MessageBox.Show("数据库错误!删除信息失败!");
+            }
+}
+
+
+    }
+}
